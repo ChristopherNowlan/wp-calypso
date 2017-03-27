@@ -20,10 +20,7 @@ const config = require( 'config' ),
 	route = require( 'lib/route' ),
 	normalize = require( 'lib/route/normalize' ),
 	{ isLegacyRoute } = require( 'lib/route/legacy-routes' ),
-	receiveUser = require( 'state/users/actions' ).receiveUser,
-	setCurrentUserId = require( 'state/current-user/actions' ).setCurrentUserId,
-	setCurrentUserFlags = require( 'state/current-user/actions' ).setCurrentUserFlags,
-	sites = require( 'lib/sites-list' )(),
+	sitesFactory = require( 'lib/sites-list' ),
 	superProps = require( 'lib/analytics/super-props' ),
 	translatorJumpstart = require( 'lib/translator-jumpstart' ),
 	nuxWelcome = require( 'layout/nux-welcome' ),
@@ -32,9 +29,8 @@ const config = require( 'config' ),
 	pushNotificationsInit = require( 'state/push-notifications/actions' ).init,
 	setRouteAction = require( 'state/ui/actions' ).setRoute,
 	syncHandler = require( 'lib/wp/sync-handler' ),
-	bindWpLocaleState = require( 'lib/wp/localization' ).bindState,
-	supportUser = require( 'lib/user/support-user-interop' ),
-	renderWithReduxStore = require( 'lib/react-helpers' ).renderWithReduxStore;
+	renderWithReduxStore = require( 'lib/react-helpers' ).renderWithReduxStore,
+	supportUser = require( 'lib/user/support-user-interop' );
 
 import { getSelectedSiteId, getSectionName } from 'state/ui/selectors';
 import { setNextLayoutFocus, activateNextLayoutFocus } from 'state/ui/layout-focus/actions';
@@ -61,8 +57,6 @@ function renderLayout( reduxStore ) {
 function reduxStoreReady( currentUser, reduxStore ) {
 	let layoutSection, validSections = [];
 
-	bindWpLocaleState( reduxStore ); // GENERIC
-
 	supportUser.setReduxStore( reduxStore );
 
 	// LOGGED IN
@@ -70,11 +64,6 @@ function reduxStoreReady( currentUser, reduxStore ) {
 		// When logged in the analytics module requires user and superProps objects
 		// Inject these here
 		analytics.initialize( currentUser, superProps ); // GENERIC hopefully, probably not
-
-		// Set current user in Redux store
-		reduxStore.dispatch( receiveUser( currentUser.get() ) ); // GENERIC
-		reduxStore.dispatch( setCurrentUserId( currentUser.get().ID ) ); // GENERIC
-		reduxStore.dispatch( setCurrentUserFlags( currentUser.get().meta.data.flags.active_flags ) ); // WAT
 
 		if ( config.isEnabled( 'push-notifications' ) ) {
 			// If the browser is capable, registers a service worker & exposes the API
@@ -84,16 +73,11 @@ function reduxStoreReady( currentUser, reduxStore ) {
 		analytics.setSuperProps( superProps );
 	}
 
-	if ( config.isEnabled( 'network-connection' ) ) {
-		asyncRequire( 'lib/network-connection', netConn => netConn.init( reduxStore ) );
-	}
-
 	// Render Layout only for non-isomorphic sections.
 	// Isomorphic sections will take care of rendering their Layout last themselves.
 	if ( ! document.getElementById( 'primary' ) ) {
 		renderLayout( reduxStore );
 
-		// EWWW
 		if ( config.isEnabled( 'catch-js-errors' ) ) {
 			const Logger = require( 'lib/catch-js-errors' );
 			const errorLogger = new Logger();
@@ -132,7 +116,7 @@ function reduxStoreReady( currentUser, reduxStore ) {
 		next();
 	} );
 
-	page( '*', function( context, next ) { // WPCOM SPECIFIC
+	page( '*', function( context, next ) {
 		// Don't normalize legacy routes - let them fall through and be unhandled
 		// so that page redirects away from Calypso
 		if ( isLegacyRoute( context.pathname ) ) {
@@ -255,7 +239,7 @@ function reduxStoreReady( currentUser, reduxStore ) {
 	}
 
 	if ( config.isEnabled( 'keyboard-shortcuts' ) ) {
-		require( 'lib/keyboard-shortcuts/global' )( sites ); // GENERIC? WHY SITES
+		require( 'lib/keyboard-shortcuts/global' )( sitesFactory() );
 	}
 
 	if ( config.isEnabled( 'desktop' ) ) {
