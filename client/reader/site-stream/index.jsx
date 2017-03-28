@@ -4,6 +4,7 @@
 import React from 'react';
 import { localize } from 'i18n-calypso';
 import { connect } from 'react-redux';
+import page from 'page';
 
 /**
  * Internal dependencies
@@ -17,11 +18,7 @@ import { getSite } from 'state/reader/sites/selectors';
 import { getFeed } from 'state/reader/feeds/selectors';
 import QueryReaderSite from 'components/data/query-reader-site';
 import QueryReaderFeed from 'components/data/query-reader-feed';
-
-// TODO was it okay to remove checkForRedirect?  I think that always paid attentiont to prefer_feed which doesn't exist in the reducer
-// we also always prefer the feed anyway...
-
-// TODO - what is has_featured for?  I deleted a whole bit about featured feeds but probably need to put those back in
+import FeedFeatured from './featured';
 
 class SiteStream extends React.Component {
 
@@ -30,6 +27,7 @@ class SiteStream extends React.Component {
 		className: React.PropTypes.string,
 		showBack: React.PropTypes.bool,
 		isDiscoverStream: React.PropTypes.bool,
+		featuredStore: React.PropTypes.object,
 	};
 
 	static defaultProps = {
@@ -45,17 +43,21 @@ class SiteStream extends React.Component {
 	}
 
 	render() {
-		const { site, feed } = this.props;
+		const { site, feed, featuredStore } = this.props;
+		// check for redirect
+		if ( site && site.prefer_feed && site.feed_ID ) {
+			page.replace( '/read/feeds/' + site.feed_ID );
+		}
+
 		const emptyContent = ( <EmptyContent /> );
 		const title = site
 			? site.name
 			: this.props.translate( 'Loading Site' );
-		// let featuredStore = null;
-		// let featuredContent = null;
 
 		if ( ( site && site.is_error ) || ( feed && feed.is_error ) ) {
 			return <FeedError sidebarTitle={ title } />;
 		}
+		const featuredContent = featuredStore && ( <FeedFeatured store={ featuredStore } /> );
 
 		return (
 			<Stream
@@ -69,8 +71,9 @@ class SiteStream extends React.Component {
 			>
 				<DocumentHead title={ this.props.translate( '%s ‹ Reader', { args: title } ) } />
 				<RefreshFeedHeader site={ site } feed={ feed } showBack={ this.props.showBack } />
+				{ featuredContent }
 				{ ! site && <QueryReaderSite siteId={ this.props.siteId } /> }
-				{ ! feed && site && <QueryReaderFeed feedId={ site.feed_ID } /> }
+				{ ! feed && site && site.feed_ID && <QueryReaderFeed feedId={ site.feed_ID } /> }
 			</Stream>
 
 		);
@@ -82,7 +85,7 @@ export default connect(
 		const site = getSite( state, ownProps.siteId );
 		return {
 			site: site,
-			feed: site && getFeed( state, site.feed_ID ),
+			feed: site && site.feed_ID && getFeed( state, site.feed_ID ),
 		};
 	}
 )( localize( SiteStream ) );
