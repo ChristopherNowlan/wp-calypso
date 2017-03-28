@@ -74,7 +74,7 @@ class NpsSurvey extends Component {
 			<div className={ className }>
 				<div className="nps-survey__question-screen">
 					<div>How likely is it that you would recommend WordPress.com to your friends, family, or colleagues?</div>
-					<div>
+					<div className="nps-survey__recommendation-select-wrapper">
 						<RecommendationSelect
 							value={ this.state.recommendationValue }
 							disabled={ shouldDisableControls }

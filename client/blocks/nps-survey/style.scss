@@ -34,12 +34,18 @@
 	}
 }
 
+.nps-survey__recommendation-select-wrapper {
+	text-align: center;
+}
+
 .nps-survey__recommendation-select {
+	box-sizing: border-box;
 	display: inline-block;
 }
 
 .nps-survey__scale-labels {
 	padding: 0 6px;
+	text-align: left;
 }
 
 .nps-survey__very-likely-label {
