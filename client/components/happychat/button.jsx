@@ -1,11 +1,13 @@
 /**
  * External dependencies
  */
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import page from 'page';
-import { connect } from 'react-redux';
+import { identity } from 'lodash';
+import { connect, noop } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import Gridicon from 'gridicons';
+import classnames from 'classnames';
 
 /**
  * Internal dependencies
@@ -15,28 +17,47 @@ import { openChat } from 'state/ui/happychat/actions';
 import Button from 'components/button';
 
 class HappychatButton extends Component {
-	onOpenChat = () => {
-		const { onOpenChat } = this.props;
+	static propTypes = {
+		openChat: PropTypes.func,
+		translate: PropTypes.func,
+		onClick: PropTypes.func,
+		borderless: PropTypes.bool,
+	};
+
+	static defaultProps = {
+		openChat: noop,
+		translate: identity,
+		onClick: noop,
+		borderless: true,
+	};
+
+	onClick = ( event ) => {
 		if ( viewport.isMobile() ) {
-			// For mobile clients, happychat will always use the page compoent instead of the sidebar
+			// For mobile clients, happychat will always use the
+			// page compoent instead of the sidebar
 			page( '/me/chat' );
 		} else {
-			onOpenChat();
+			this.props.openChat();
 		}
+
+		this.props.onClick( event );
 	}
 
 	render() {
-		const { translate } = this.props;
+		const { translate, children, className, borderless } = this.props;
+		const classes = classnames( 'happychat__button', className, {
+			'is-borderless': borderless,
+		} );
+
 		return (
 			<Button
-				className="sidebar__footer-chat"
-				borderless
-				onClick={ this.onOpenChat }
+				className={ classes }
+				onClick={ this.onClick }
 				title={ translate( 'Support Chat' ) }>
-				<Gridicon icon="chat" />
+				{ children || <Gridicon icon="chat" /> }
 			</Button>
 		);
 	}
 }
 
-export default connect( null, { onOpenChat: openChat } )( localize( HappychatButton ) );
+export default connect( null, { openChat } )( localize( HappychatButton ) );

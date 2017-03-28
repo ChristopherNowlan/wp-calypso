@@ -8,7 +8,7 @@ import Gridicon from 'gridicons';
 /**
  * Internal dependencies
  */
-import OlarkChatButton from 'components/olark-chat-button';
+import HappychatButton from 'components/happychat/button';
 
 export default localize( ( { cart, translate, paymentType, transactionStep } ) => {
 	const { products } = cart;
@@ -16,8 +16,7 @@ export default localize( ( { cart, translate, paymentType, transactionStep } ) =
 	const productSlug = product && product.product_slug;
 
 	return (
-		<OlarkChatButton
-			borderless
+		<HappychatButton
 			className="checkout__payment-chat-button"
 			chatContext="presale"
 			tracksData={ {
@@ -27,6 +26,6 @@ export default localize( ( { cart, translate, paymentType, transactionStep } ) =
 			} }>
 				<Gridicon icon="chat" className="checkout__payment-chat-button-icon" />
 				{ translate( 'Need help? Chat with us' ) }
-		</OlarkChatButton>
+		</HappychatButton>
 	);
 } );
