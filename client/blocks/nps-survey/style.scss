@@ -6,6 +6,14 @@
 	display: none;
 }
 
+.button.nps-survey__finish-button,
+.button.nps-survey__not-answer-button,
+.button.nps-survey__dismiss-button {
+	display: block;
+	margin: 0 auto;
+	min-width: 170px;
+}
+
 .button.nps-survey__finish-button {
 	display: none;
 }
@@ -22,7 +30,7 @@
 
 .nps-survey.is-recommendation-selected {
 	.button.nps-survey__finish-button {
-		display: inline-block;
+		display: block;
 	}
 }
 

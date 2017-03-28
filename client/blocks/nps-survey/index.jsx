@@ -90,6 +90,7 @@ class NpsSurvey extends Component {
 							Finish
 						</Button>
 						<Button borderless
+							className="nps-survey__not-answer-button"
 							disabled={ shouldDisableControls }
 							onClick={ this.handleDismissClick }
 						>
@@ -101,9 +102,10 @@ class NpsSurvey extends Component {
 					Thanks for providing your feedback!
 					<div>
 						<Button primary
+							className="nps-survey__dismiss-button"
 							onClick={ this.handleDismissClick }
 						>
-							Dismiss
+							Close
 						</Button>
 					</div>
 				</div>
