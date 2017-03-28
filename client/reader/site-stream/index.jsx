@@ -21,7 +21,7 @@ import FeedError from 'reader/feed-error';
 import FeedStore from 'lib/feed-store';
 import FeedStoreActions from 'lib/feed-store/actions';
 import { state as FeedState } from 'lib/feed-store/constants';
-import * as FeedStreamStoreActions from 'lib/feed-stream-store/actions';
+import { fetchNextPage } from 'lib/feed-stream-store/actions';
 import feedStreamFactory from 'lib/feed-stream-store';
 import smartSetState from 'lib/react-smart-set-state';
 
@@ -150,7 +150,7 @@ class SiteStream extends React.Component {
 
 		if ( site && site.get( 'has_featured' ) ) {
 			featuredStore = feedStreamFactory( 'featured:' + site.get( 'ID' ) );
-			setTimeout( () => FeedStreamStoreActions.fetchNextPage( featuredStore.id ), 0 ); // timeout to prevent invariant violations
+			setTimeout( () => fetchNextPage( featuredStore.id ), 0 ); // timeout to prevent invariant violations
 			featuredContent = ( <FeedFeatured store={ featuredStore } /> );
 		}
 
