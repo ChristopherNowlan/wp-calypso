@@ -24,15 +24,13 @@ import purchasePaths from '../paths';
 import { removePurchase } from 'state/purchases/actions';
 import FormSectionHeading from 'components/forms/form-section-heading';
 import userFactory from 'lib/user';
-import { isOperatorsAvailable, isChatAvailable } from 'state/ui/olark/selectors';
-import olarkApi from 'lib/olark-api';
-import olarkActions from 'lib/olark-store/actions';
-import olarkEvents from 'lib/olark-events';
+import { isHappychatAvailable } from 'state/happychat/selectors';
 import { isDomainOnlySite as isDomainOnly } from 'state/selectors';
 import { receiveDeletedSite as receiveDeletedSiteDeprecated } from 'lib/sites-list/actions';
 import { receiveDeletedSite } from 'state/sites/actions';
 import { setAllSitesSelected } from 'state/ui/actions';
 import { recordTracksEvent } from 'state/analytics/actions';
+import HappychatButton from 'components/happychat/button';
 
 const user = userFactory();
 
@@ -67,21 +65,6 @@ const RemovePurchase = React.createClass( {
 				questionTwoRadio: null
 			}
 		};
-	},
-
-	componentWillMount() {
-		olarkEvents.on( 'api.chat.onBeginConversation', this.chatStarted );
-	},
-
-	componentWillUnmount() {
-		olarkEvents.off( 'api.chat.onBeginConversation', this.chatStarted );
-	},
-
-	chatStarted() {
-		this.recordChatEvent( 'calypso_precancellation_chat_begin' );
-		olarkApi( 'api.chat.sendNotificationToOperator', {
-			body: 'Context: Precancellation'
-		} );
 	},
 
 	recordChatEvent( eventAction ) {
@@ -123,10 +106,10 @@ const RemovePurchase = React.createClass( {
 		this.setState( { isDialogVisible: true } );
 	},
 
-	openChat() {
-		olarkActions.expandBox();
-		olarkActions.focusBox();
+	chatButtonClicked( event ) {
 		this.recordChatEvent( 'calypso_precancellation_chat_click' );
+		event.preventDefault();
+
 		this.setState( { isDialogVisible: false } );
 	},
 
@@ -234,12 +217,13 @@ const RemovePurchase = React.createClass( {
 	},
 
 	getChatButton() {
-		return {
-			action: 'chat',
-			additionalClassNames: 'remove-purchase__chat-button is-borderless',
-			onClick: this.openChat,
-			label: this.translate( 'Need help? Chat with us' ),
-		};
+		return (
+			<HappychatButton
+				className="remove-purchase__chat-button"
+				onClick={ this.chatButtonClicked }>
+				{ this.translate( 'Need help? Chat with us' ) }
+			</HappychatButton>
+		);
 	},
 
 	renderDomainDialog() {
@@ -257,7 +241,7 @@ const RemovePurchase = React.createClass( {
 			} ],
 			productName = getName( getPurchase( this.props ) );
 
-		if ( this.props.showChatLink && config.isEnabled( 'upgrades/precancellation-chat' ) ) {
+		if ( this.props.isHappychatAvailable && config.isEnabled( 'upgrades/precancellation-chat' ) ) {
 			buttons.unshift( this.getChatButton() );
 		}
 
@@ -332,7 +316,7 @@ const RemovePurchase = React.createClass( {
 			buttonsArr = inStepOne ? [ buttons.cancel, buttons.next ] : [ buttons.cancel, buttons.prev, buttons.remove ];
 		}
 
-		if ( this.props.showChatLink && config.isEnabled( 'upgrades/precancellation-chat' ) ) {
+		if ( this.props.isHappychatAvailable && config.isEnabled( 'upgrades/precancellation-chat' ) ) {
 			buttonsArr.unshift( this.getChatButton() );
 		}
 
@@ -423,7 +407,7 @@ const RemovePurchase = React.createClass( {
 
 export default connect(
 	( state, { selectedSite } ) => ( {
-		showChatLink: isOperatorsAvailable( state ) && isChatAvailable( state, 'precancellation' ),
+		isHappychatAvailable: isHappychatAvailable( state ),
 		isDomainOnlySite: isDomainOnly( state, selectedSite && selectedSite.ID ),
 	} ),
 	{
