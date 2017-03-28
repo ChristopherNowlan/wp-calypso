@@ -142,6 +142,14 @@ const wrapSettingsForm = getFormSettings => SettingsForm => {
 				wp_cache_path: '/wordpress/',
 				wp_cache_readonly: false,
 				wp_cache_writable: false,
+
+				// CDN
+				ossdl_cname: '',
+				ossdl_https: false,
+				ossdl_off_cdn_url: 'http://donnapep.wpsandbox.me',
+				ossdl_off_exclude: '.php',
+				ossdl_off_include_dirs: 'wp-content,wp-includes',
+				ossdlcdn: false,
 			};
 
 			return {
