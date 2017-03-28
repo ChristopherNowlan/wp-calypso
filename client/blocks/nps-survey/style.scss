@@ -6,6 +6,15 @@
 	display: none;
 }
 
+.nps-survey__question,
+.nps-survey__thank-you {
+	padding: 1.5em;
+}
+
+.nps-survey__buttons {
+	padding: 1em;
+}
+
 .button.nps-survey__finish-button,
 .button.nps-survey__not-answer-button,
 .button.nps-survey__dismiss-button {
@@ -35,6 +44,7 @@
 }
 
 .nps-survey__recommendation-select-wrapper {
+	padding: 1em;
 	text-align: center;
 }
 

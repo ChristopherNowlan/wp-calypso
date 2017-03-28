@@ -73,7 +73,9 @@ class NpsSurvey extends Component {
 		return (
 			<div className={ className }>
 				<div className="nps-survey__question-screen">
-					<div>How likely is it that you would recommend WordPress.com to your friends, family, or colleagues?</div>
+					<div className="nps-survey__question">
+						How likely is it that you would recommend WordPress.com to your friends, family, or colleagues?
+					</div>
 					<div className="nps-survey__recommendation-select-wrapper">
 						<RecommendationSelect
 							value={ this.state.recommendationValue }
@@ -81,7 +83,7 @@ class NpsSurvey extends Component {
 							onChange={ this.handleRecommendationSelectChange }
 						/>
 					</div>
-					<div>
+					<div className="nps-survey__buttons">
 						<Button primary
 							className="nps-survey__finish-button"
 							disabled={ shouldDisableControls }
@@ -99,8 +101,10 @@ class NpsSurvey extends Component {
 					</div>
 				</div>
 				<div className="nps-survey__thank-you-screen">
-					Thanks for providing your feedback!
-					<div>
+					<div className="nps-survey__thank-you">
+						Thanks for providing your feedback!
+					</div>
+					<div className="nps-survey__buttons">
 						<Button primary
 							className="nps-survey__dismiss-button"
 							onClick={ this.handleDismissClick }
