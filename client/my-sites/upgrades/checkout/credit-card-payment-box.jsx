@@ -14,6 +14,7 @@ var PayButton = require( './pay-button' ),
 	analytics = require( 'lib/analytics' ),
 	cartValues = require( 'lib/cart-values' );
 
+import { abtest } from 'lib/abtest';
 import CartCoupon from 'my-sites/upgrades/cart/cart-coupon';
 import PaymentChatButton from './payment-chat-button';
 import config from 'config';
@@ -39,6 +40,7 @@ var CreditCardPaymentBox = React.createClass( {
 		const hasBusinessPlanInCart = some( cart.products, { product_slug: PLAN_BUSINESS } );
 		const showPaymentChatButton =
 			config.isEnabled( 'upgrades/presale-chat' ) &&
+			abtest( 'presaleChatButton' ) === 'showChatButton' &&
 			hasBusinessPlanInCart;
 
 		const paypalButtonClasses = classnames( 'credit-card-payment-box__switch-link', {
