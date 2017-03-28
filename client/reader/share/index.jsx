@@ -10,7 +10,8 @@ import SocialLogo from 'social-logos';
 import PopoverMenu from 'components/popover/menu';
 import PopoverMenuItem from 'components/popover/menu-item';
 import Gridicon from 'gridicons';
-const sitesList = require( 'lib/sites-list' )();
+import sitesListFactory from 'lib/sites-list';
+const sitesList = sitesListFactory();
 import {
 	recordAction,
 	recordGaEvent,
