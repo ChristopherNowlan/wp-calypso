@@ -8,7 +8,11 @@ import classnames from 'classnames';
  * Internal Dependencies
  */
 import FeedStreamStoreActions from 'lib/feed-stream-store/actions';
-import * as stats from 'reader/stats';
+import {
+	recordAction,
+	recordGaEvent,
+	recordTrack,
+} from 'reader/stats';
 
 var Gap = React.createClass( {
 
@@ -39,9 +43,9 @@ var Gap = React.createClass( {
 	handleClick: function() {
 		FeedStreamStoreActions.fillGap( this.props.store.id, this.props.gap );
 		this.setState( { isFilling: true } );
-		stats.recordAction( 'fill_gap' );
-		stats.recordGaEvent( 'Clicked Fill Gap' );
-		stats.recordTrack( 'calypso_reader_filled_gap', {
+		recordAction( 'fill_gap' );
+		recordGaEvent( 'Clicked Fill Gap' );
+		recordTrack( 'calypso_reader_filled_gap', {
 			stream: this.props.store.id
 		} );
 	}

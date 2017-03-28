@@ -11,7 +11,11 @@ import PopoverMenu from 'components/popover/menu';
 import PopoverMenuItem from 'components/popover/menu-item';
 import Gridicon from 'gridicons';
 const sitesList = require( 'lib/sites-list' )();
-import * as stats from 'reader/stats';
+import {
+	recordAction,
+	recordGaEvent,
+	recordTrack,
+} from 'reader/stats';
 import SitesPopover from 'components/sites-popover';
 import sections from 'sections-preload';
 
@@ -110,9 +114,9 @@ const ReaderShare = React.createClass( {
 		event.preventDefault();
 		if ( ! this.state.showingMenu ) {
 			const target = !! sitesList.getPrimary() ? 'wordpress' : 'external';
-			stats.recordAction( 'open_share' );
-			stats.recordGaEvent( 'Opened Share to ' + target );
-			stats.recordTrack( 'calypso_reader_share_opened', {
+			recordAction( 'open_share' );
+			recordGaEvent( 'Opened Share to ' + target );
+			recordTrack( 'calypso_reader_share_opened', {
 				target
 			} );
 		}
@@ -129,9 +133,9 @@ const ReaderShare = React.createClass( {
 	},
 
 	pickSiteToShareTo( slug ) {
-		stats.recordAction( 'share_wordpress' );
-		stats.recordGaEvent( 'Clicked on Share to WordPress' );
-		stats.recordTrack( 'calypso_reader_share_to_site' );
+		recordAction( 'share_wordpress' );
+		recordGaEvent( 'Clicked on Share to WordPress' );
+		recordTrack( 'calypso_reader_share_to_site' );
 		page( `/post/${slug}?` + buildQuerystringForPost( this.props.post ) );
 		return true;
 	},
@@ -140,9 +144,9 @@ const ReaderShare = React.createClass( {
 		this.closeMenu();
 		const actionFunc = actionMap[ action ];
 		if ( actionFunc ) {
-			stats.recordAction( 'share_' + action );
-			stats.recordGaEvent( 'Clicked on Share to ' + action );
-			stats.recordTrack( 'calypso_reader_share_action_picked', {
+			recordAction( 'share_' + action );
+			recordGaEvent( 'Clicked on Share to ' + action );
+			recordTrack( 'calypso_reader_share_action_picked', {
 				action: action
 			} );
 			actionFunc( this.props.post );

@@ -11,7 +11,11 @@ import Stream from 'reader/stream';
 import DocumentHead from 'components/data/document-head';
 import EmptyContent from './empty';
 import TagStreamHeader from './header';
-import * as stats from 'reader/stats';
+import {
+	recordAction,
+	recordGaEvent,
+	recordTrack,
+} from 'reader/stats';
 import HeaderBack from 'reader/header-back';
 import { getReaderFollowedTags, getReaderTags } from 'state/selectors';
 import { requestFollowTag, requestUnfollowTag } from 'state/reader/tags/items/actions';
@@ -85,9 +89,9 @@ const TagStream = React.createClass( {
 		const isFollowing = this.isSubscribed();
 		const toggleAction = isFollowing ? unfollowTag : followTag;
 		toggleAction( decodedTag );
-		stats.recordAction( isFollowing ? 'followed_topic' : 'unfollowed_topic' );
-		stats.recordGaEvent( isFollowing ? 'Clicked Follow Topic' : 'Clicked Unfollow Topic', tag );
-		stats.recordTrack( isFollowing ? 'calypso_reader_reader_tag_followed' : 'calypso_reader_reader_tag_unfollowed', {
+		recordAction( isFollowing ? 'followed_topic' : 'unfollowed_topic' );
+		recordGaEvent( isFollowing ? 'Clicked Follow Topic' : 'Clicked Unfollow Topic', tag );
+		recordTrack( isFollowing ? 'calypso_reader_reader_tag_followed' : 'calypso_reader_reader_tag_unfollowed', {
 			tag
 		} );
 	},
