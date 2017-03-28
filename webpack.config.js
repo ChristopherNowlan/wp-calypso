@@ -59,7 +59,7 @@ const webpackConfig = {
 				loader: 'exports?window.tinymce',
 			},
 			{
-				include: /node_modules\/tinymce/,
+				include: /node_modules[\/\\]tinymce/,
 				loader: 'imports?this=>window',
 			}
 		]

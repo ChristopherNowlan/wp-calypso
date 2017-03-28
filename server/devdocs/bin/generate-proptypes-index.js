@@ -11,9 +11,9 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const reactDocgen = require( 'react-docgen' );
+const globby = require( 'globby' );
 
 const root = path.dirname( path.join( __dirname, '..', '..' ) );
-const pathSwap = new RegExp(path.sep, 'g');
 
 /**
  * Converts a camel cased string into a slug
@@ -46,9 +46,9 @@ const readFile = ( filePath ) => {
  */
 const processFile = ( filePath ) => {
 	const filename = path.basename( filePath );
-	const includePathRegEx = new RegExp(`^client${ path.sep }(.*?)${ path.sep }${ filename }$`);
-	const includePathSuffix = ( filename === 'index.jsx' ? '' : path.sep + path.basename( filename, '.jsx' ) );
-	const includePath = ( includePathRegEx.exec( filePath )[1] + includePathSuffix ).replace( pathSwap, '/' ) ;
+	const includePathRegEx = new RegExp(`^client/(.*?)/${ filename }$`);
+	const includePathSuffix = ( filename === 'index.jsx' ? '' : '/' + path.basename( filename, '.jsx' ) );
+	const includePath = includePathRegEx.exec( filePath )[1] + includePathSuffix;
 	try {
 		const usePath = path.isAbsolute( filePath ) ? filePath : path.join( process.cwd(), filePath );
 		const document = readFile( usePath );
@@ -107,12 +107,7 @@ const writeFile = ( contents ) => {
 };
 
 const main = ( () => {
-	const fileList = process
-		.argv
-		.splice( 2, process.argv.length )
-		.map( ( fileWithPath ) => {
-			return fileWithPath.replace( /^\.\//, '' );
-		} );
+	const fileList = globby.sync( process.argv.slice( 2 ) );
 
 	if ( fileList.length === 0 ) {
 		process.stderr.write( 'You must pass a list of files to process' );
