@@ -91,6 +91,10 @@
 	display: inline-block;
 }
 
+.nps-survey__recommendation-option.is-selected {
+	font-weight: bold;
+}
+
 .nps-survey__recommendation-option input[type=radio] {
 	margin: 0 2px;
 }
