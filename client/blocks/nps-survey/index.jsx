@@ -8,6 +8,7 @@ import classNames from 'classnames';
  * Internal dependencies
  */
 import Button from 'components/button';
+import Card from 'components/card';
 import RecommendationSelect from './recommendation-select';
 
 class NpsSurvey extends Component {
@@ -71,7 +72,7 @@ class NpsSurvey extends Component {
 		const shouldDisableControls = this.state.isSubmitting || this.state.isSubmitted;
 
 		return (
-			<div className={ className }>
+			<Card className={ className }>
 				<div className="nps-survey__question-screen">
 					<div className="nps-survey__question">
 						How likely is it that you would recommend WordPress.com to your friends, family, or colleagues?
@@ -113,7 +114,7 @@ class NpsSurvey extends Component {
 						</Button>
 					</div>
 				</div>
-		</div>
+		</Card>
 		);
 	}
 }

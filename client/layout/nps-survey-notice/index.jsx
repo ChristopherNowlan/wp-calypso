@@ -32,7 +32,10 @@ class NpsSurveyNotice extends Component {
 
 	render() {
 		return (
-			<Dialog isVisible={ this.props.isNpsSurveyDialogShowing } onClose={ this.handleDialogClose }>
+			<Dialog
+				additionalClassNames="nps-survey-notice"
+				isVisible={ this.props.isNpsSurveyDialogShowing }
+				onClose={ this.handleDialogClose }>
 				<NpsSurvey
 					name="global-notice-radio-buttons-v1"
 					onDismissed={ this.handleSurveyDismissed }
